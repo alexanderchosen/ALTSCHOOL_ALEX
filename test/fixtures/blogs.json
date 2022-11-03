@@ -1,0 +1,68 @@
+[
+    {
+        "title": " A Deep Dive Into Backend Engineering Vol. 1",
+        "description": "This blog is aimed at taking a deep dive into Backend Engineering; learning the basic concepts and packages",
+        "tags": ["#SoftwareEngineering", "#WebDevelopment", "#Beginners", "#Technology"],
+        "author": "Rising Odegua", 
+        "timestamp": "",
+        "state": "draft",
+        "read_count": 50,
+        "reading_time": "15 minutes",
+        "body": ""
+    },
+    {
+        "title": " A Deep Dive Into Backend Engineering Vol. 2",
+        "description": "This blog is aimed at taking a deep dive into Backend Engineering; learning the advanced concepts and packages",
+        "tags": ["#SoftwareEngineering", "#WebDevelopment", "#Beginners", "#Technology"],
+        "author": "Rising Odegua", 
+        "timestamp": "",
+        "state": "published",
+        "read_count": 130,
+        "reading_time": "25 minutes",
+        "body": ""
+    },
+    {
+        "title": " Best Software Engineering teaching practices",
+        "description": "Have you ever wondered how I conveniently teach backend engineering to students virtually? Read this to learn more about best teaching practices",
+        "tags": ["#SoftwareEngineering","#Teaching", "#WebDevelopment"],
+        "author": "Daniel Adesoji", 
+        "timestamp": "",
+        "state": "published",
+        "read_count": 100,
+        "reading_time": "30 minutes",
+        "body": ""
+    },
+    {
+        "title": " Virtual or physical classes? Which is more effective ",
+        "description": "Facts shows that students have different learning methods and preferences. Understanding your best learning style is paramount and helps quick learning.",
+        "tags": ["#SoftwareEngineering", "#teaching", "#learningmethods", "#WebDevelopment"],
+        "author": "Daniel Adesoji", 
+        "timestamp": "",
+        "state": "draft",
+        "read_count": 100,
+        "reading_time": "5 minutes",
+        "body": ""
+    },
+    {
+        "title": "Beginners guide to Open Source",
+        "description": "Have you always wondered ",
+        "tags": ["#SoftwareEngineering","#openSource", "#WebDevelopment", "#community", "#beginners"],
+        "author": "Alexander Chosen", 
+        "timestamp": "",
+        "state": "published",
+        "read_count": 400,
+        "reading_time": "40 minutes",
+        "body": ""
+    },
+    {
+        "title": " My Outreachy Contribution Experience",
+        "description": "Have you always wondered ",
+        "tags": ["#SoftwareEngineering","#openSource", "#WebDevelopment", "#community", "#beginners"],
+        "author": "Alexander Chosen", 
+        "timestamp": "",
+        "state": "draft",
+        "read_count": 400,
+        "reading_time": "20 minutes",
+        "body": ""
+    }
+]

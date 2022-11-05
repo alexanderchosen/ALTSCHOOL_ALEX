@@ -7,6 +7,7 @@ const bodyParser = require('body-parser')
 const blogsModel = require("./models/blogs")
 const {connectToMongoDb} = require('./db')
 const userRoute = require("./routes/users")
+require('./authentication/auth')
 
 require('dotenv').config()
 
@@ -26,9 +27,9 @@ app.set('views', 'views')
 app.set('view engine', 'ejs')
 
 //routes
-app.use("/blogs", blogRoute) // route is protected and can be accessed by logged in users - suing jwt strategy for auth
-//app.use("/", authRoute) // used to authenticate users
-app.use("/users", userRoute) // using a jwt strategy for authentication, seesion is false to prevent saving the token in browser 
+app.use("/auth", authRoute) // used to authenticate users and cn be accessed by all
+app.use("/blogs",passport.authenticate('jwt', { session: false }), blogRoute) // route is protected and can be accessed by logged in users - using jwt strategy for auth
+app.use("/users",passport.authenticate('jwt', { session: false }), userRoute) // using a jwt strategy for authentication, seesion is false to prevent saving the token in browser 
 
 // show home page as list of published blogs endpoint
 // also, be orderable by read_count, reading_time and timestamp
@@ -50,7 +51,7 @@ app.get("/", (req,res)=>{
 // }
 
 
-    blogsModel.find()
+    blogsModel.find({state: "published"})
     .then(
         blogs =>{
             res.status(200).json({
@@ -71,15 +72,16 @@ app.get("/", (req,res)=>{
 // the list of blogs accessed by all users should be searchable by author, title, tags
 // show only published blogs
 app.get('/id', async (req, res)=>{
-    let id = mongoose.Types.ObjectId(req.params.author.trim());
+    let id = mongoose.Types.ObjectId(req.params.trim());
     // let id = (req.body).trim()
     // let objectId = new ObjectID(id);
     
-    const blogs = await blogsModel.findById(id)
 
     try{
-        if(id = blogs.author){
-            res.status(200).json(
+        if(id = req.params.author){
+            const blogs = await blogsModel.findById(id)
+           
+           return res.status(200).json(
                 {
                     status: true,
                     message: {

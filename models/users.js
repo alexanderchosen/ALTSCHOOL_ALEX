@@ -2,6 +2,7 @@ const mongoose = require('mongoose')
 
 const Schema = mongoose.Schema
 const ObjectId = Schema.ObjectId
+const moment = require('moment')
 
 const UserSchema = new Schema (
     {
@@ -26,7 +27,7 @@ const UserSchema = new Schema (
             unique: [true, 'email must be unique']
         },
         password: {
-            type: mixed,
+            type: Schema.Types.Mixed,
             required: true
         },
         createdAt: {

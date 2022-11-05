@@ -1,19 +1,22 @@
 const express= require('express')
+const mongoose = require('mongoose')
 const blogRoute = require("./routes/blogs")
 const authRoute = require("./routes/auth")
 const passport = require('passport')
-const PORT = process.env.PORT
 const bodyParser = require('body-parser')
-const blogsModel = require("models/blogs")
-const {connectToMongoDb} = require("./db")
+const blogsModel = require("./models/blogs")
+const {connectToMongoDb} = require('./db')
+const userRoute = require("./routes/users")
 
 require('dotenv').config()
 
 const app= express()
 
-connectToMongoDb()
-
 app.use(express.json())
+
+const PORT = process.env.PORT
+
+connectToMongoDb()
 
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -23,32 +26,38 @@ app.set('views', 'views')
 app.set('view engine', 'ejs')
 
 //routes
-app.use("/blogs", blogRoute) // route is not protected and can be accessed by both logged in and not logged in users
-app.use("/", authRoute) // used to authenticate users
+app.use("/blogs", blogRoute) // route is protected and can be accessed by logged in users - suing jwt strategy for auth
+//app.use("/", authRoute) // used to authenticate users
 app.use("/users", userRoute) // using a jwt strategy for authentication, seesion is false to prevent saving the token in browser 
 
-// show home page as list of blogs endpoint
+// show home page as list of published blogs endpoint
 // also, be orderable by read_count, reading_time and timestamp
 // break down the array tags to single strings using the split array method
 app.get("/", (req,res)=>{
 
     // add order queries 
     // add pagination of 20 per page
+    // show only published blogs
+
+//     const blog = function blogFormat(){
+//         for(let i=0; i<= blogs.length; i++){
+//         blogs.title,
+//         description: blogs.description,
+//         author: blogs.author,
+//         reading_time: blogs.reading_time,
+//         tags: blogs.tags
+//     }
+// }
+
+
     blogsModel.find()
     .then(
         blogs =>{
             res.status(200).json({
                 status: true,
-                message: {
-                    title: blogs.title,
-                    author: blogs.author,
-                    tags: blogs.tag,
-                    description: blogs.description,
-                    username: blogs.username
-                }
-            })
-        }
-    ).catch(
+                message: blogs
+        })
+    }).catch(
         err =>{
             res.status(404).json({
                 message: err                
@@ -58,55 +67,53 @@ app.get("/", (req,res)=>{
 })
 
 
+
 // the list of blogs accessed by all users should be searchable by author, title, tags
-app.get('/:id', (req, res)=>{
-    let id;
+// show only published blogs
+app.get('/id', async (req, res)=>{
+    let id = mongoose.Types.ObjectId(req.params.author.trim());
+    // let id = (req.body).trim()
+    // let objectId = new ObjectID(id);
     
+    const blogs = await blogsModel.findById(id)
+
     try{
-        if(id = req.body.author){
-            blogsModel.findById(id)
-            .then(blog =>{
-                res.status(200).json(
-                    {
-                        status: true,
-                         message: {
-                        title: blog.title,
-                        author: blog.author,
-                        tags: blog.tag,
-                        description: blog.description,
-                        username: blog.username
-                    }
-                    }
-                )
-            }).catch(err =>{
-                res.status(404).json(
-                    {
-                        status: false,
-                        message: err
-                    }
-                )
-            })
-        }
-        else if(id = req.body.title){
-            blogsModel.findById(id)
-            .then(blog =>{
-                res.status(200).json({
+        if(id = blogs.author){
+            res.status(200).json(
+                {
                     status: true,
                     message: {
-                        title: blog.title,
-                        author: blog.author,
-                        tags: blog.tag,
-                        description: blog.description,
-                        username: blog.username
+                        title: blogs.title,
+                        author: blogs.author,
+                        tags: blogs.tags,
+                        description: blogs.description,
+                        username: blogs.username
+                    }
+                    }
+                )
+            }
+        //     (err =>{
+        //         res.status(404).json(
+        //             {
+        //                 status: false,
+        //                 message: err
+        //             }
+        //         )
+        //     })
+        // }
+        else if(id = blogs.title){
+            res.status(200).json({
+                    status: true,
+                    message: {
+                        title: blogs.title,
+                        author: blogs.author,
+                        tags: blogs.tag,
+                        description: blogs.description,
+                        username: blogs.username
                     }
                 })
-            }).catch(err =>{
-                res.status(404).json({
-                    status: false,
-                    message: err
-                })
-            })
-        }
+            }
+    
         // add find blogs by tags. blogs are saved in an array format so they must be splitted into single strings before used for search cases
         // also be orderable by read_count, reading_time and timestamp
     } catch(error){

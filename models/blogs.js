@@ -16,7 +16,8 @@ const BlogSchema = new Schema({
         type: String
     },
     tags:{
-        type: String,
+        type: Array,
+        default: undefined,
         required: true
     },
     author: {
@@ -37,8 +38,9 @@ const BlogSchema = new Schema({
         default: 0
     },
     reading_time:{
-        type: String,
-        required: true
+        type: Schema.Types.Mixed,
+        required: true,
+        default: "0 secs"
     },
     body:{
         type: String,
@@ -48,4 +50,4 @@ const BlogSchema = new Schema({
 })
 
 
-module.exports = mongoose.model ('Blogs', BlogSchema)
+module.exports = mongoose.model('blogs', BlogSchema)

@@ -1,31 +1,10 @@
 // require schema, express, 
 const express = require('express')
-const blogsModel = require('./models/blogs')
+const blogsModel = require('../models/blogs')
 const moment = require('moment')
 
 const blogRouter = express.Router()
 
-// this get route is for the authenticated user to get all his drafted and published blogs, have a MY BLOGS button
-// in a div card showing basic info such as title, description, state, tags  
-blogRouter.get('/myblogs', (req, res)=>{
-    // filter by state query and paginate 5 per pages
-    // onclick event on each list to show the full body
-    blogsModel.find()
-    .then(blogs => {
-        res.status(200).json({
-            status: true,
-            message: {
-                title: blogs.title,
-                tags: blogs.tag,
-                description: blogs.description,
-                state: blogs.state
-            }
-        })
-    }).catch(err =>{
-        console.log(err)
-        res.send(err)
-    })
-})
 
 // For all users - get published blogs by author or title, tags
 // break down the array tags to single strings using the split array method
@@ -76,7 +55,7 @@ blogRouter.get('/:id', (req, res)=>{
 
 
 
-// create a new blog with a default draft state
+// create a new blog with a default draft state - for auth users
 blogRouter.post('/', (req, res)=>{
     const reqBody = req.body
 
@@ -87,7 +66,8 @@ blogRouter.post('/', (req, res)=>{
         tags: reqBody.tags,
         author: reqBody.author,
         timestamp: moment().toDate(),
-        body: reqBody.body
+        body: reqBody.body,
+        state: reqBody.state
     }).then(
         blog =>{
             res.status(200).json({
@@ -108,37 +88,37 @@ blogRouter.post('/', (req, res)=>{
 
 // update a blog state only from draft to published
 // logged in user (author) should be able to change the description, tags, title, state (if its in draft), body
-blogRouter.patch('/myblogs/:title', (req, res)=>{
+blogRouter.patch('/myblogs/:id', async (req, res)=>{
 // write a function that generates unique random ids
     // let ref_id = function(){
     //     let id = Math.Rand
     // }
-    const title = req.params
-    const {state, description, tags, body } = req.body
+    const id = req.params.id
+    let {state, description, tags, body } = req.body
 
-    const blog = blogsModel.findById(title)
+    const blog = await blogsModel.findByIdAndUpdate({_id: id})
 
     // check if title is for the authenticated author or user
     if(!blog){
         return res.status(404).json({
             status: false,
-            message: `blog with ${title} does not exist.`
+            message: `blog with ${id} does not exist.`
         })
     }
 
-    if(state == "draft"){
+    if(blog.state == "draft"){
         blog.state = state
     }
 
     // work on changing the author's tag input from strings to an array
     blog.description = description
+    // use spread operator to join previous tags, or remove previous tags using .pop and delete specific tags
     blog.tags = tags
     blog.body = body
 
-    blog.save()
+   // blog.save()
 
     return res.status(200).json({
-        status: true,
         message: blog
     })
 
@@ -147,14 +127,19 @@ blogRouter.patch('/myblogs/:title', (req, res)=>{
 
 // delete a blog oly done by the author
 // id should be a unique title or generated ref_id
-blogRouter.delete('/myblogs/:title'), (req,res)=>{
-    // use another request paramter to delete specific blog
-    const {title} = req.params
+blogRouter.delete('/myblogs/:id'), async (req,res)=>{
+    // use another request parameter to delete specific blog
+    const id = req.params.id
 
-    const blog2Delete = blogsModel.deleteOne(title)
+    const blog2Delete = await blogsModel.deleteOne(id)
 
     return res.status(200).json({
         status: true,
-        message: `blog with title ${blog2Delete.title} has been deleted`
+        message: blog2Delete
     })
+
+    // get/show the remaining blogs after deleting
 }
+
+
+module.exports = blogRouter

@@ -8,7 +8,7 @@
         "state": "draft",
         "read_count": 50,
         "reading_time": "15 minutes",
-        "body": ""
+        "body": "Backend Engineering is a branch of Web development"
     },
     {
         "title": " A Deep Dive Into Backend Engineering Vol. 2",
@@ -17,9 +17,8 @@
         "author": "Rising Odegua", 
         "timestamp": "",
         "state": "published",
-        "read_count": 130,
         "reading_time": "25 minutes",
-        "body": ""
+        "body": "We will dive deeper and discuss advanced backend terminologies"
     },
     {
         "title": " Best Software Engineering teaching practices",
@@ -28,9 +27,7 @@
         "author": "Daniel Adesoji", 
         "timestamp": "",
         "state": "published",
-        "read_count": 100,
-        "reading_time": "30 minutes",
-        "body": ""
+        "body": "Teaching is a must-have skill for every techie and it can be learnt"
     },
     {
         "title": " Virtual or physical classes? Which is more effective ",
@@ -39,8 +36,6 @@
         "author": "Daniel Adesoji", 
         "timestamp": "",
         "state": "draft",
-        "read_count": 100,
-        "reading_time": "5 minutes",
         "body": ""
     },
     {
@@ -50,19 +45,15 @@
         "author": "Alexander Chosen", 
         "timestamp": "",
         "state": "published",
-        "read_count": 400,
-        "reading_time": "40 minutes",
-        "body": ""
+        "body": "Open source is one sure way to collaborate with amazing projects from anywhere in the world"
     },
     {
         "title": " My Outreachy Contribution Experience",
-        "description": "Have you always wondered ",
-        "tags": ["#SoftwareEngineering","#openSource", "#WebDevelopment", "#community", "#beginners"],
+        "description": "Join me here as I share my amazing experiencing contributing to a project as an outreachy intern",
+        "tags": ["#SoftwareEngineering","#openSource", "#Outreachy", "#WebDevelopment", "#community", "#beginners"],
         "author": "Alexander Chosen", 
         "timestamp": "",
         "state": "draft",
-        "read_count": 400,
-        "reading_time": "20 minutes",
-        "body": ""
+        "body": "I applied for Outreachy's Winter cohort"
     }
 ]

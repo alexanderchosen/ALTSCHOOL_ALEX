@@ -1,7 +1,5 @@
 // require schema, express, 
 const express = require('express')
-const blogsModel = require('../models/blogs')
-const moment = require('moment')
 const BlogsController = require("../controllers/blogsController")
 
 const blogRouter = express.Router()

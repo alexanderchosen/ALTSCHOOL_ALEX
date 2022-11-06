@@ -122,14 +122,14 @@ exports.getBlogs = async (req, res)=>{
     
         if(tags){
             findQuery.tags ={
-                tags: {$eq: tags }
+                tags: {$in: tags }
             }
         }
     
         const sortQuery ={}
-    
-        const sortAttributes = order_by.split(',')
-    
+
+        const sortAttributes = order_by
+
         for (const attribute of sortAttributes){
             if(order === 'asc' && order_by){
                 sortQuery[attribute] = 1

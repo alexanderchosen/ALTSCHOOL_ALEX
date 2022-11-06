@@ -1,5 +1,5 @@
 const express= require('express')
-const mongoose = require('mongoose')
+
 const blogRoute = require("./routes/blogs")
 const authRoute = require("./routes/auth")
 const passport = require('passport')
@@ -56,24 +56,27 @@ const findQuery = {}
 
 if(author_name){
     findQuery.author_name = {
-        author: {$eq: author_name }}
+        author: {
+            $eq: ["author", author_name] }}
     }
 
     if(title){
         findQuery.title = {
-            title: {$eq: title}
+            title: {
+                $eq: ["title", title]}
         }
     }
 
     if(tags){
         findQuery.tags ={
-            tags: {$eq: tags }
+            tags: {
+                $in: ["tags", tags]}
         }
     }
 
     const sortQuery ={}
 
-    const sortAttributes = order_by.split(',')
+    const sortAttributes = order_by
 
     for (const attribute of sortAttributes){
         if(order === 'asc' && order_by){
@@ -124,64 +127,6 @@ if(author_name){
 //             })
 //         }
 //     )
-
-
-
-
-
-// the list of blogs accessed by all users should be searchable by author, title, tags
-// show only published blogs
-// app.get('/id', async (req, res)=>{
-//     let id = mongoose.Types.ObjectId(req.params.trim());
-//     // let id = (req.body).trim()
-//     // let objectId = new ObjectID(id);
-    
-
-//     try{
-//         if(id = req.params.author){
-//             const blogs = await blogsModel.findById(id)
-           
-//            return res.status(200).json(
-//                 {
-//                     status: true,
-//                     message: {
-//                         title: blogs.title,
-//                         author: blogs.author,
-//                         tags: blogs.tags,
-//                         description: blogs.description,
-//                         username: blogs.username
-//                     }
-//                     }
-//                 )
-//             }
-//         //     (err =>{
-//         //         res.status(404).json(
-//         //             {
-//         //                 status: false,
-//         //                 message: err
-//         //             }
-//         //         )
-//         //     })
-//         // }
-//         else if(id = blogs.title){
-//             res.status(200).json({
-//                     status: true,
-//                     message: {
-//                         title: blogs.title,
-//                         author: blogs.author,
-//                         tags: blogs.tag,
-//                         description: blogs.description,
-//                         username: blogs.username
-//                     }
-//                 })
-//             }
-    
-//         // add find blogs by tags. blogs are saved in an array format so they must be splitted into single strings before used for search cases
-//         // also be orderable by read_count, reading_time and timestamp
-//     } catch(error){
-//         res.status(400).send("Invalid Search ID. Search by either using the Author's name, blog's title or tags")
-//     }
-// }) 
 
 
 // error handler

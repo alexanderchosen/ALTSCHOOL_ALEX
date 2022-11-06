@@ -15,7 +15,7 @@ function connectToMongoDb(){
     
     mongoose.connection.on("error", (err)=>{
         console.log(err)
-        console.log("COnnection Error")
+        console.log('MongoDB event error: ' + err)
     })
 }
 

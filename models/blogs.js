@@ -39,7 +39,6 @@ const BlogSchema = new Schema({
     },
     reading_time:{
         type: Schema.Types.Mixed,
-        required: true,
         default: "0 secs"
     },
     body:{

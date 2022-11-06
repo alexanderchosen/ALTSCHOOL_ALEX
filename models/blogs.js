@@ -46,6 +46,11 @@ const BlogSchema = new Schema({
         type: String,
         required: true,
         unique: [ true, 'We uphold every authors right and frowns seriously against unlawful copyrights and plagiarism ']
+    },
+    user: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'users',
+        required: true
     }
 })
 

@@ -14,16 +14,41 @@ const usersRouter = express.Router()
 usersRouter.get('/myblogs', (req, res)=>{
     // filter by state query and paginate 5 per pages
     // onclick event on each list to show the full body
+
+    const authorName = req.body
+    const page = req.query.p || 1
+    const blogsPerPage = 5
+    let blogs =[]
+    
     blogsModel.find()
+    .populate({
+        path: 'blogs',
+        match: {author: {$gte: authorName}},
+        select: 'author'
+    })
+    .exec()
+    .skip((page-1) * blogsPerPage)
+    .limit(blogsPerPage)
+    .forEach((blog) => {
+      blogs =  blogs.push(blog)
+      return blogs 
+    })
     .then(blogs => {
         res.status(200).json({
             status: true,
-            message: {
-                title: blogs.title,
-                tags: blogs.tag,
-                description: blogs.description,
-                state: blogs.state
-            }
+            Blogs: blogs.map(blog =>{
+                return {
+                    title: blog.title,
+                    description: blog.description,
+                    tags: blog.tags,
+                    author: blog.author,
+                    timestamp: blog.timestamp,
+                    state: blog.state,
+                    read_count: blog.read_count,
+                    reading_time: blog.reading_time,
+                    body: blog.body
+                }
+            })
         })
     }).catch(err =>{
         console.log(err)
@@ -33,10 +58,17 @@ usersRouter.get('/myblogs', (req, res)=>{
 
 
 //get users details with author's name or get all user details and then filter through with author's name
-usersRouter.get('/profile/:author', (req, res)=>{
-    const {author}= req.params
+usersRouter.get('/profile', (req, res)=>{
+    const authorName= req.body
 // this author params should be gotten from the sign in details after auth
-    blogsModel.findById(author)
+    blogsModel.find
+    .populate(
+        {
+            path: 'user',
+            match: {author: {$gte: authorName}},
+            
+        }
+    ).exec()
     .then(
         profileDetails =>{
             res.status(200).json({

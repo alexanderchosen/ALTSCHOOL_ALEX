@@ -40,23 +40,29 @@ app.get("/", (req,res)=>{
     // add pagination of 20 per page
     // show only published blogs
 
-//     const blog = function blogFormat(){
-//         for(let i=0; i<= blogs.length; i++){
-//         blogs.title,
-//         description: blogs.description,
-//         author: blogs.author,
-//         reading_time: blogs.reading_time,
-//         tags: blogs.tags
-//     }
-// }
 
+const page = req.query.p || 1
+const blogsPerPage = 20
 
+const startIndex = (page - 1) * blogsPerPage // page - 1 for an array if page starts at 1 
+const endIndex = page * blogsPerPage
+ 
+let blogs = []
+let blogsResult = []
+// show blogs response inside a list
     blogsModel.find({state: "published"})
+    .skip((page-1) * blogsPerPage)
+    .limit(blogsPerPage)
+    .forEach((blog) => {
+      blogs =  blogs.push(blog)
+      return blogsResult = blogs.slice(startIndex, endIndex)
+    }
+    )
     .then(
-        blogs =>{
+        blogsResult =>{
             res.status(200).json({
                 status: true,
-                message: blogs
+                message: blogsResult
         })
     }).catch(
         err =>{

@@ -34,9 +34,14 @@ const UserSchema = new Schema (
         createdAt: {
             type: Date,
             default: moment().toDate()
-        }
+        },
+        blogs: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'blogs',
+            required: true
+
     }
-)
+})
 
 // pre- hook
 UserSchema.pre(

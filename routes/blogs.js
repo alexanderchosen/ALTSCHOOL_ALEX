@@ -15,7 +15,7 @@ blogRouter.get('/:id', (req, res)=>{
     let id;
     try{
         if(id = req.params.author){
-            blogsModel.findById(id)
+            blogsModel.findById(id, {state: "published"})
             .then(blog =>{
                 res.status(200).json(
                     {
@@ -52,6 +52,26 @@ blogRouter.get('/:id', (req, res)=>{
         res.status(400).send("Invalid Search ID. Search by either using the Author's name, blog's title or tags")
     }
 }) 
+
+// show a single blog when requested and return user information with the blog
+blogRouter.get('/:blogId', (req, res)=>{
+    const blogId = req.params.id
+
+    blogsModel.findById(blogId)
+    .populate({
+        path: 'user',
+        select: 'firstName lastName email'
+    })
+    .exec()
+    .then(
+        blog =>{
+            res.status(200).json({
+                status: true,
+                message: blog
+        }
+    )
+})
+})
 
 
 

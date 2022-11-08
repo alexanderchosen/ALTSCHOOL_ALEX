@@ -15,7 +15,7 @@ exports.getMyBlogs = async (req, res)=>{
     const blogsPerPage = 5
     let blogs =[]
     
-    userssModel.find()
+    usersModel.find()
     .populate({
         path: 'blogs',
         match: {author: {$eq: authorName}},

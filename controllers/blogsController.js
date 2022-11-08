@@ -1,11 +1,15 @@
 const express = require('express')
 const blogsModel = require('../models/blogs')
 const moment = require('moment')
+const usersModel = require('../models/users')
 
 // create a new blog with a default draft state - for auth users
 exports.createBlog = async (req, res) =>{
+    const {id} = req.user
     const reqBody = req.body
     const blogPost = reqBody.body
+
+    const user = await usersModel.findById({_id: id})
 
     const wordCount = blogPost.split(" ").length
 
@@ -45,7 +49,8 @@ exports.createBlog = async (req, res) =>{
         title: reqBody.title,
         description: reqBody.description,
         tags: reqBody.tags,
-        author: reqBody.author,
+        author: id,
+        owner: `${user.firstName} ${user.lastname}`,
         timestamp: moment().toDate(),
         body: reqBody.body,
         state: reqBody.state,
@@ -53,9 +58,10 @@ exports.createBlog = async (req, res) =>{
         reading_time: reading_time
     }).then(
         blog =>{
+            const saveMyBlog=  blog.save()
             res.status(200).json({
                 status: true,
-                message: blog
+                message: saveMyBlog
             })
         }
     ).catch(
@@ -66,6 +72,8 @@ exports.createBlog = async (req, res) =>{
             })
         }
     )
+
+    
 }
 
 // show a single blog when requested and return user information with the blog
@@ -171,7 +179,7 @@ exports.updateBlog = async (req, res)=>{
         // work on changing the author's tag input from strings to an array
         blog.description = description
         // use spread operator to join previous tags, or remove previous tags using .pop and delete specific tags
-        blog.tags = tags
+        blog.tags = [...tags]
         blog.body = body
     
        await blog.save()
@@ -188,11 +196,22 @@ exports.updateBlog = async (req, res)=>{
 // id should be a unique title or generated ref_id
 exports.deleteBlog = async (req, res)=>{
     const id = req.params.id
+    const author = req.user.id
+    const blog = blog.author.valueOf()
 
-    const blog2Delete = await blogsModel.deleteOne(id)
+    if(author === blog){
+        const blog2Delete = await blogsModel.findByIdAndDelete({_id:id})
 
     return res.status(200).json({
         status: true,
-        message: blog2Delete
+        message: "blog with" + id + "was successfully deleted"
     })
+    }
+    else{
+        return res.status(404).json({
+            status: false,
+            message: " An error occured"
+        })
+    }
+    
 }

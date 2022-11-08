@@ -15,10 +15,10 @@ exports.getMyBlogs = async (req, res)=>{
     const blogsPerPage = 5
     let blogs =[]
     
-    blogsModel.find()
+    userssModel.find()
     .populate({
         path: 'blogs',
-        match: {author: {$gte: authorName}},
+        match: {author: {$eq: authorName}},
         select: 'author'
     })
     .exec()
@@ -52,29 +52,45 @@ exports.getMyBlogs = async (req, res)=>{
 }
 
 exports.getProfile = async (req, res)=>{
-    const authorName= req.body
+    const {id}= req.params.id
+    const userId = req.user.id
 // this author params should be gotten from the sign in details after auth
-    usersModel.find()
-    .populate(
-        {
-            path: 'blogs',
-            match: {author: {$gte: authorName}},
-            
-        }
-    ).exec()
-    .then(
-        profileDetails =>{
-            res.status(200).json({
-                status: true,
-                message:profileDetails
-            })
-        }
-    ).catch(
-        err =>{
-            res.status(404).json({
-                status: false,
-                message: err
-            })
-        }
-    )
+    const userConfirmed = await usersModel.findById(id)
+
+    if(userConfirmed === userId){
+        return res.status(200).json({
+            status: true,
+            message: userConfirmed
+        })
+    }
+    else{
+        return res.status(404).json({
+            status: false,
+            message: " user does not exist"
+    })
 }
+}
+// usersModel.find()
+//     .populate(
+//         {
+//             path: 'blogs',
+//             match: {author: {$eq: authorName}},
+            
+//         }
+//     ).exec()
+//     .then(
+//         profileDetails =>{
+//             res.status(200).json({
+//                 status: true,
+//                 message:profileDetails
+//             })
+//         }
+//     ).catch(
+//         err =>{
+//             res.status(404).json({
+//                 status: false,
+//                 message: err
+//             })
+//         }
+//     )
+// }

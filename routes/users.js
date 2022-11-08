@@ -8,7 +8,7 @@ const usersRouter = express.Router()
 
 usersRouter.get('/myblogs', UsersController.getMyBlogs)
 
-usersRouter.get('/profile', UsersController.getProfile)
+usersRouter.get('/profile/:id', UsersController.getProfile)
 
 
 module.exports = usersRouter

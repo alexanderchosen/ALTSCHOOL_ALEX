@@ -200,7 +200,7 @@ exports.deleteBlog = async (req, res)=>{
     const blog = blog.author.valueOf()
 
     if(author === blog){
-        const blog2Delete = await blogsModel.findByIdAndDelete({_id:id})
+        const blogToDelete = await blogsModel.findByIdAndDelete({_id:id})
 
     return res.status(200).json({
         status: true,

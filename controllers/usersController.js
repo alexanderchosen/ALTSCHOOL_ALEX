@@ -66,7 +66,7 @@ exports.getProfile = async (req, res)=>{
     else{
         return res.status(404).json({
             status: false,
-            message: " user does not exist"
+            message: " user does not exist. Use correct ID"
     })
 }
 }

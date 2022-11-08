@@ -8,6 +8,7 @@ const usersRouter = express.Router()
 
 usersRouter.get('/myblogs', UsersController.getMyBlogs)
 
+// used /id to get the user id and match
 usersRouter.get('/profile/:id', UsersController.getProfile)
 
 

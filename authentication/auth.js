@@ -65,7 +65,7 @@ passport.use(
                     return next( null, false, {message: 'email and password not found'})
                 }
 
-                const validatePassword = await user.$isValidPassword(password)
+                const validatePassword = await user.isValidPassword(password)
 
                 if(!validatePassword){
                     return next(null, false, {message: 'password is incorrect!'})

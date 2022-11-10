@@ -33,11 +33,7 @@ authRouter.post(
                         if (error) return next(error);
 
                         const body = { _id: user._id, email: user.email };
-                        //You store the id and email in the payload of the JWT. 
-                        // You then sign the token with a secret or key (JWT_SECRET), and send back the token to the user.
-                        // DO NOT STORE PASSWORDS IN THE JWT!
-
-                        // Add expiration time to token and once time elapses, a refresh token is required and the user is logged out 
+                       
                         const token = jwt.sign({ user: body }, process.env.JWT_SECRET, {expiresIn: '1h'});
 
                         return res.json({ token });

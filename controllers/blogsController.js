@@ -2,14 +2,12 @@ const express = require('express')
 const blogsModel = require('../models/blogs')
 const moment = require('moment')
 const usersModel = require('../models/users')
+const { Error } = require('mongoose')
 
 // create a new blog with a default draft state - for auth users
 exports.createBlog = async (req, res) =>{
-    const {id} = req.user
     const reqBody = req.body
     const blogPost = reqBody.body
-
-    const user = await usersModel.findById({_id: id})
 
     const wordCount = blogPost.split(" ").length
 
@@ -29,9 +27,11 @@ exports.createBlog = async (req, res) =>{
     
         let finalTime = parseFloat(minutes + getSeconds)
         if(finalTime.toString().split(".")[1] < 30){
-            return Math.floor(finalTime)
+            let final = Math.floor(finalTime)
+            return final + " minutes"
         }else{
-            return Math.round(finalTime)
+            let final = Math.round(finalTime)
+            return final + " minutes"
         }
 
     //     let seconds = resultSplit[1] * 0.60
@@ -42,39 +42,28 @@ exports.createBlog = async (req, res) =>{
     //     finalResult = finalResult.toFixed()
     }
 
-    read_count = read_count + 1
-
+   
 
     const blog = blogsModel.create({
         title: reqBody.title,
         description: reqBody.description,
         tags: reqBody.tags,
-        author: id,
-        owner: `${user.firstName} ${user.lastname}`,
+        author: reqBody.author,
+        owner: `${reqBody.firstName} ${reqBody.lastname}`,
         timestamp: moment().toDate(),
         body: reqBody.body,
         state: reqBody.state,
-        read_count: read_count,
-        reading_time: reading_time
-    }).then(
-        blog =>{
-            const saveMyBlog=  blog.save()
-            res.status(200).json({
-                status: true,
-                message: saveMyBlog
-            })
-        }
-    ).catch(
-        err =>{
-            res.status(404).json({
-                status: false,
-                message: err
-            })
-        }
-    )
-
+        reading_time: reading_time()
+    })
     
+    res.status(200).json({
+        status: true,
+        message: blog
+    })
 }
+   
+    
+
 
 // show a single blog when requested and return user information with the blog
 exports.getBlog = async(req, res)=>{
@@ -159,37 +148,82 @@ exports.getBlogs = async (req, res)=>{
 // logged in user (author) should be able to change the description, tags, title, state (if its in draft), body
 exports.updateBlog = async (req, res)=>{
   
-        const id = req.params.id
-        let {state, description, tags, body } = req.body
+    //     const id = req.params.id
+    //     let {state, description, tags, body } = req.body
     
-        const blog = await blogsModel.findByIdAndUpdate({_id: id})
+    //     const blog = await blogsModel.findByIdAndUpdate({_id: id})
     
-        // check if title is for the authenticated author or user
-        if(!blog){
-            return res.status(404).json({
-                status: false,
-                message: `blog with ${id} does not exist.`
-            })
+    //     // check if title is for the authenticated author or user
+    //     if(!blog){
+    //         return res.status(404).json({
+    //             status: false,
+    //             message: `blog with ${id} does not exist.`
+    //         })
+    //     }
+
+    //     try{
+    //     if(blog.state == "draft"){
+    //         blog.state = state
+    //     }
+    
+    //     // work on changing the author's tag input from strings to an array
+    //     // use spread operator to join previous tags, or remove previous tags using .pop and delete specific tags
+    //     if(blog.description || blog.tags || blog.body){  
+    //         blog.description = description
+    //         blog.tags = tags
+    //         blog.body = body
+    //      }
+        
+    
+    //    await blog.save()
+    
+    //     return res.status(200).json({
+    //         message: blog
+    //     })
+
+    // } catch{
+    //     console.error
+    //     return res.status(404).json({
+    //         status: false,
+    //         message: Error
+    //     })
+    // }
+
+    
+        const userId = req.user.id
+        const { id } = req.params
+        const blog = await blogsModel.findById(id)
+        const getBlogId = blog.author.valueOf()
+        const { title, description, body, tags } = req.body
+    
+        try {
+        if (userId == getBlogId) {
+          if (tags) {
+           let updateBlog = await blogsModel.findByIdAndUpdate(
+              { _id: id },
+              { title, description, body, 
+                $push: { tags: tags } },
+              { new: true }
+            )
+            return res.status(201).json({ 
+                status: true,
+                message: updateBlog
+             })
+          }
+          updateBlog= await blogsModel.findByIdAndUpdate(
+            { _id: id },
+            { title, description, body },
+            { new: true }
+          )
+          return res.status(201).json({
+            status: true,
+            message: updateBlog
+           })
         }
-    
-        if(blog.state == "draft"){
-            blog.state = state
-        }
-    
-        // work on changing the author's tag input from strings to an array
-        blog.description = description
-        // use spread operator to join previous tags, or remove previous tags using .pop and delete specific tags
-        blog.tags = [...tags]
-        blog.body = body
-    
-       await blog.save()
-    
-        return res.status(200).json({
-            message: blog
-        })
-    
+      } catch (err) {
+        next(err)
+      }
     }
-      
 
 
 // delete a blog only done by the author

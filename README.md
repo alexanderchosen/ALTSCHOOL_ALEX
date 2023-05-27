@@ -134,8 +134,8 @@ https://naija-diary.cyclic.app -->
 
 * Twitter: [@chosenfingers_](https://twitter.com/chosenfingers_)
 * Github: [@alexanderchosen](https://github.com/alexanderchosen)
-* LinkedIn: [@Oluwaseun Awosise](https://linkedin.com/in/alexander-okon)
-* Project Link: [Naija-diary](https://github.com/alexanderchosen/blogging-api)
+* LinkedIn: [@Alexander Okon](https://linkedin.com/in/alexander-okon)
+* Project Link: [blogging Api](https://github.com/alexanderchosen/blogging-api)
 
 
 <!-- Markdown Links & Images -->
